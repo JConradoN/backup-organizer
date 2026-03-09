@@ -40,6 +40,9 @@ Use `stable` para maior previsibilidade e `throughput` para maior velocidade qua
   - valida conectividade com Ollama
 - `Instalar/atualizar dependencias (pip)`:
   - roda instalacao via `requirements.txt`
+- `Instalar stack OCR (EasyOCR)`:
+  - instala PyTorch CPU + EasyOCR + OpenCV para habilitar OCR na variante Lite apos a instalacao
+  - pode demorar varios minutos
 - `Verificar Ollama`:
   - testa endpoint configurado em `Ollama URL`
 

@@ -130,7 +130,7 @@ Opcao recomendada para teste rapido (LITE):
 
 1. Copie `dist/BackupOrganizerLite_Setup.exe`.
 2. Execute o instalador e abra o app pelo atalho.
-3. Se precisar de OCR local depois, use a aba `Instalacao` para orientar instalacao de dependencias no ambiente alvo.
+3. Se precisar de OCR local depois, use na aba `Instalacao` o botao `Instalar stack OCR (EasyOCR)`.
 
 Observacoes:
 

@@ -100,6 +100,41 @@ def run_command_capture(cmd: list[str], cwd: Path | None = None, timeout: int = 
         return 1, f"Falha ao executar comando: {exc}"
 
 
+def install_ocr_stack() -> tuple[bool, str]:
+    steps: list[tuple[str, list[str], int]] = [
+        ("Atualizando pip", [python_cmd(), "-m", "pip", "install", "--upgrade", "pip"], 1800),
+        (
+            "Instalando PyTorch (CPU)",
+            [
+                python_cmd(),
+                "-m",
+                "pip",
+                "install",
+                "torch",
+                "torchvision",
+                "torchaudio",
+                "--index-url",
+                "https://download.pytorch.org/whl/cpu",
+            ],
+            7200,
+        ),
+        (
+            "Instalando EasyOCR + OpenCV",
+            [python_cmd(), "-m", "pip", "install", "easyocr", "opencv-python"],
+            3600,
+        ),
+    ]
+
+    outputs: list[str] = []
+    for label, cmd, timeout in steps:
+        rc, out = run_command_capture(cmd, cwd=ROOT_DIR, timeout=timeout)
+        outputs.append(f"=== {label} (exit={rc}) ===\n{out or '(sem saida)'}")
+        if rc != 0:
+            return False, "\n\n".join(outputs)
+
+    return True, "\n\n".join(outputs)
+
+
 def check_ollama(url: str) -> tuple[bool, str]:
     try:
         import urllib.request
@@ -465,7 +500,7 @@ def render_installation(cfg: dict[str, Any]) -> None:
         status_rows = collect_env_status(cfg)
         st.dataframe(pd.DataFrame(status_rows), use_container_width=True, hide_index=True)
 
-    col1, col2 = st.columns(2)
+    col1, col2, col3 = st.columns(3)
     if col1.button("Instalar/atualizar dependencias (pip)", use_container_width=True):
         rc, out = run_command_capture([python_cmd(), "-m", "pip", "install", "-r", "requirements.txt"], cwd=ROOT_DIR, timeout=1800)
         if rc == 0:
@@ -474,7 +509,16 @@ def render_installation(cfg: dict[str, Any]) -> None:
             st.error(f"Falha ao instalar dependencias (exit={rc}).")
         st.code(out or "(sem saida)")
 
-    if col2.button("Verificar Ollama", use_container_width=True):
+    if col2.button("Instalar stack OCR (EasyOCR)", use_container_width=True):
+        st.info("Instalando stack OCR (pode levar varios minutos)...")
+        ok, out = install_ocr_stack()
+        if ok:
+            st.success("Stack OCR instalada com sucesso. Rode 'Verificar ambiente' para confirmar.")
+        else:
+            st.error("Falha ao instalar stack OCR.")
+        st.code(out or "(sem saida)")
+
+    if col3.button("Verificar Ollama", use_container_width=True):
         ok, msg = check_ollama(str(cfg.get("ollama_url", DEFAULT_CONFIG["ollama_url"])))
         if ok:
             st.success("Ollama respondeu corretamente.")
