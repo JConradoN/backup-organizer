@@ -14,6 +14,7 @@ Write-Host "[2/3] Gerando executavel..."
   --clean `
   --onedir `
   --name BackupOrganizer `
+  --copy-metadata streamlit `
   --add-data "src;src" `
   --add-data "docs;docs" `
   --add-data "requirements.txt;." `

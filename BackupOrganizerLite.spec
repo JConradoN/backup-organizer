@@ -1,11 +1,13 @@
 # -*- mode: python ; coding: utf-8 -*-
 
+from PyInstaller.utils.hooks import copy_metadata
+
 
 a = Analysis(
     ['src\\app_launcher.py'],
     pathex=[],
     binaries=[],
-    datas=[('src', 'src'), ('docs', 'docs'), ('requirements.txt', '.')],
+    datas=[('src', 'src'), ('docs', 'docs'), ('requirements.txt', '.')] + copy_metadata('streamlit'),
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},

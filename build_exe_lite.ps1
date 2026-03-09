@@ -14,6 +14,7 @@ Write-Host "[2/2] Gerando executavel LITE (sem OCR pesado)..."
   --clean `
   --onedir `
   --name BackupOrganizerLite `
+  --copy-metadata streamlit `
   --exclude-module torch `
   --exclude-module torchvision `
   --exclude-module torchaudio `
